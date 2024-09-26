@@ -1,48 +1,50 @@
 # Machine Learning & AI Project 1: NBA Statistics Predictor
-## Danielle Li<br />Setepmber 26th, 2024
-### Literature Review/Resources
+## Danielle Li<br />September 26th, 2024
+<div align="center">
+  <img width="450" alt="nbaLogo" src="https://github.com/user-attachments/assets/b8f8f7e4-6c06-4a98-8756-197dc989c57e">
+</div>
+
+### Literature Review/ Resources
 I originally wanted to do a training set with volleyball statistics, but unfortunately, there is not a lot of volleyball statistics previously recorded for me to access. Originally I had wanted to complete a model that could recognize certain actions in volleyball such as hitting, passing, etc. but after doing further research, I found that the project would take more than a month to complete while also needing a lot of resources (lots of storage). There is also very little volleyball games that are recorded consistently and easily accessible, which prompted me to move to NBA statistics. There were many datasets on Kaggle and on the internet in general due to the league's popularity, leading me to find this dataset: [NBA Traditional Boxscores 1997-2024](https://www.kaggle.com/datasets/szymonjwiak/nba-traditional?select=team_traditional.csv). This dataset recorded each NBA game starting in the 1997 season to the 2024 season with the points scored, win/loss (represented by 1 and 0, respectively), blocks, assists, field goals, etc. The multitiude of statistics that was recorded made it favorable and from looking at the data present, I decided that I wanted to create a NBA statistic predictor as there was enough data in csv to hopefully create accurate predictions. I have consistenly watched the NBA in the past couple of years, so I thought it would be fun to do the project on it. In the end, I chose the Kaggle dataset linked earlier for my dataset.
 
 I then looked into existing NBA predictors, which led me to this paper: [Predicting the Outcome of NBA Games](https://digitalcommons.bryant.edu/cgi/viewcontent.cgi?article=1000&context=honors_data_science#:~:text=The%20most%20common%20features%20used,rating%2C%20and%20true%20shooting%20percentage.), which was Matthew Houde's Senior Honors Project for his data science class. Within his paper, he looked at several existing models in order to see if he could improve the efficacy of the models. He ran 6 different models (Logistic Regression, Random Forest Classifier, K Neighbors Classifier, Support Vector Classifier, Gaussian Naïve Bayes, and XGBoost Classifieron) his testing set in order to see which was the most accurate in its predictions. The results came out to be that the Gaussian Naïve Bayes was the best predictor followed by the Logistic Regression. His research also discussed that Logistic Regression was a common model for predicting sports outcomes. The Linear Regression model to me was the more plausible choice for my NBA Predictor model as I only had a month and very little machine learning background knowledge to complete this project. This led me to watch these Youtube videos: [Python Machine Learning Tutorial (Data Science)](https://www.youtube.com/watch?v=7eh4d6sabA0) and [Machine Learning Tutorial Python - 3: Linear Regression Multiple Variables](https://www.youtube.com/watch?v=J_LnPL3Qg70), which did provide sample code for my Linear Regression model later on. These two videos explained the basics of how Machine Learning worked as well as how it can be implemented within Python. The first video goes through step by step how one would write code if they were to run a python machine learning model, while the second explained the logic behind multiple variables for a Linear Regression. Houde's work also cited a highly efficient NBA predictor made by Jake Kandell called [NBA Predict](https://github.com/JakeKandell/NBA-Predict/blob/master/createModel.py) who used a Linear Regression model for his prediction model which calcalculated the winning percentage of a game between two NBA teams. The popularity of the Linear Regression Model along with the code seeming less complex and doable for a one month project.
 
 I also want to note that ChatGPT and Gemini were both used to debug my code during this process (the exact lines are commented in my code), and ChatGPT was also used to write a few functions that had originally caused bugs in my code. I will go indepth later on about how the two AIs were used.
 
-### Model
-I chose to use Colab because it was the service I used when I first learned about machine learning. It was also beneficial that I didn't have to download PyCharm/other services in order to run my code. I started with importing my libraries which I looked off of the youtube videos and Jake Kandell's project. There were more generic imports for data evaluation like numpy, pandas, and math. The libraries I imported from the other sources were from sklearn, which contained tools for machine learning and statistical modeling. I also imported files and drive from google.colab in order to connect my Google Drive account to my Colab. I had previously downloaded the dattaset off Kaggle, which I uploaded to my google drive. Connecting my google drive and colab allowed me to import my data into my Jupyter notebook.
-[imports](docs/CONTRIBUTING.md)
-
-I then cleaned my data to preprocess it by deleting the rows that were missing any values and any duplicates. I also created a new dataset which only the games from the 2018-2019 season and onward as data from a larger time period would create a model that was more generalized in its predictions. Data beyond 5 years will start becoming less useful for predictions as the data couldn't reflect current trends. After the seasons before 2019 were taken out, I also created two more functions that I added to the dataset as columns: win percentage and turnover percentage. I obtained the win percentage formula from ChatGPT as the traditional win percentage calculation required point differential, a statistic I didn't have access to. The turnover percentage was found through a quick google search, and I added that column as well to my dataset. Once we had added our new variables, we created a new dataset that only contained the columns/variables we needed for our Linear Algorithms so that are dataset only contained the necessary statistics (dropped unnecessary statistics like game id, type of game, team id, etc.).
-
-For a Linear Regression model, it finds the relationship between a dependent variable and multiple independent variables by creating a linear equation for the data. The equation, essentially, is going to look similar to a linear equation, y=mx+b, except this time, due to the multiple variables, our equation is: y = b + m1x1 + m2x2 + ... + mnxn (different slopes/coefficients for each independent variable which adds up to the value of the dependent variable). I used the Linear Regression model to predict multiple game statistics like Points, Rebounds, Turnovers, Assists, Free Throws Made, Blocks, and Field Goals Made. For each of them, I used different independent variables to predict their statistic because only certain statistics have strong associations with the statistic. For example, for points, I used 
+### Linear Regression Models
+Importing Data: I chose to use Colab because it was the service I used when I first learned about machine learning. It was also beneficial that I didn't have to download PyCharm/other services in order to run my code. I started with importing my libraries which I looked off of the youtube videos and Jake Kandell's project. There were also library imports for data evaluation like NumPy, PANDAS, and math. The libraries I imported from the other sources were from scikit-learn, which contained tools for machine learning and statistical modeling. I also imported files and drive from google.colab in order to connect my Google Drive account to my Colab. I had previously downloaded the dattaset off Kaggle, which I uploaded to my google drive. Connecting my google drive and colab allowed me to import my data into my Jupyter notebook.
+<div align="center">
+  <img width="400" alt="imports" src="https://github.com/user-attachments/assets/ae63a1d2-284a-43ac-b650-e9faabfaa63e">
+</div>
 
 
+Cleaning the data: I then cleaned my data to preprocess it by deleting the rows that were missing any values and any duplicates. I also created a new dataset which only the games from the 2018-2019 season and onward as data from a larger time period would create a model that was more generalized in its predictions. Data beyond 5 years will start becoming less useful for predictions as the data couldn't reflect current trends. After the seasons before 2019 were taken out, I also created two more functions that I added to the dataset as columns: win percentage and turnover percentage. I obtained the win percentage formula from ChatGPT as the traditional win percentage calculation required point differential, a statistic I didn't have access to. The turnover percentage formula was found through a quick google search, and I created the appropriate function in order to add the statistics of that column to my dataset. Once we had added our new variables, we created a new dataset that only contained the columns/variables we needed for our Linear Algorithms so that are dataset only contained the necessary statistics (dropped unnecessary statistics like game id, type of game, team id, etc.).
+
+Split data into Train/Test Sets: Before we create our models for each statistic, we need to split out data into training and testing sets. The training set is used to train the model where the model creates the equation with coefficients for the independent variables in the end. This equation is then used against the testing set (with the actual values) where the accuracy of the prediction is evaluated. I decided to split 0.25/0.75 so that 1/4 of my data was used for testing while 3/4 was used for training. We do so for each dependent variable we try to predict.
+
+Creating the model: For a Linear Regression model, it finds the relationship between a dependent variable and multiple independent variables by creating a linear equation for the data. The equation, essentially, is going to look similar to a linear equation, y=mx+b, except this time, due to the multiple variables, our equation is: y = b + m<sub>1</sub>x<sub>1</sub> + m<sub>2</sub>x<sub>2</sub> + ... + m<sub>n</sub>x<sub>n</sub> (different slopes/coefficients for each independent variable which adds up to the value of the dependent variable). I used the Linear Regression model to predict multiple game statistics like Points, Rebounds, Turnovers, Assists, Free Throws Made, Blocks, and Field Goals Made. For each of them, I used different independent variables to predict their statistic because only certain statistics have strong associations with the statistic. For example, for the Linear Regression model for predicting the points a team made in a match, I used win percentage, rebounds, turnovers, turnover percent, number of free throws made along with 8 other statistics as the independent variables in order to predict the number of points. I defined the features/independent variables for each linear regression model and then trained the model:
+<div align="center">
+  <img width="400" alt="imports" src=https://github.com/user-attachments/assets/944ed5cb-b93d-4ba0-9f54-5a7d10eaf573>
+</div>
+
+Evaluated Model: After training my model, I evaluated the accuracy of my model's predictions through the Mean Absolute Error (MAE), Mean Squared Error (MSE), Root Mean Squared Error (RMSE), and R-Squared. The first three of these evaluations was shown in Jake Kandell's model which had inspired me to use them as a way of calculating accuracy. This was done using the metrics function from sklearn. For MAE, MSE, and RMSE, we want the values to be close to 0 as it would show that there was little to no difference between the predicted values and the actual values. For R-Squared, we want the value to be close to 1 as it'd show that the regression predictions fit the data exactly.
+
+I also created a function to convert the user's input of the teams' abreviated names to their full names. This was later utilized in the final print statements.
+
+Making Predictions: The predict_game_performance function takes user's input of (home team, away team, date, season) to predict the outcome of a game with its statistics. It extracts the game data of that day's matchup and then uses the Linear Regression models to predict the different statistics. The final print message displays who would have scored more points during the match as well as the stats for the home team and the accuracy of the linear regression models. For:
+<div align="center">
+  <img width="400" alt="imports" src=https://github.com/user-attachments/assets/c8c56faa-be59-401e-aa0c-0ee0110935e4>
+</div>
+We predicted the following:
+<div align="center">
+  <img width="800" alt="imports" src=https://github.com/user-attachments/assets/9b48b6bd-4867-407d-84da-dde986da1225>
+</div>
 
 
+### Results/ Problems
+When we run our model, it displays the r<sup>2</sup> values, which shows the accuracy of our model. We can see that our predictions for points, rebounds, and field goals made are extremely accurate as all three are really close to 1 or has a r<sup>2</sup> value of 1. However, for the other statistics, they all had rather low r<sup>2</sup> values.
 
-
-
-
-
-
-### Problems
-
-why I chose my model for this problem, variables used
-
-why i chose this dataset (include why I chose it and the dataset, include the common columns used, easily formatted)
-
-
-### how the actual machine learning process went for me
-installed libraries, which ones, why (type the actual libraries)
-
-cleaned up data, explain which columns were dropped, excluded, rows dropped
-
-model selection & training, trained for each separate one, adjusted variables used for prediction for each statistics, show example of one?
-
-using the model, implementing it, show the results
-
-### Results
-
-discuss results, residuals (means squared)/accuracy of the different linear algorithm (show one fo the algorithm's 
+Overall, For turnovers, this is heavily influenced by the opponents' defensive pressure and since we didn't calculate the opponents' defense statistic into the model, this would have led us to not be able to create predictions as accurately. For assists, we didn't include the
 
 
 
